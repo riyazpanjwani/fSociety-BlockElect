@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Block Elect
+{% endblock %}
+{% block content %}
+      <!-- Forms
+      ================================================== -->
+  <!--     <div class="bs-docs-section">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="page-header">
+              <h1 id="forms">Forms</h1>
+            </div>
+          </div>
+        </div> -->
+
+
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="bs-component">
+              <form method="POST" action="verify">
+                <fieldset>
+                  <legend>Profile</legend>
+                  <div class="form-group">
+                    <label for="name">Name</label>
+                    {{ person.name }}
+                  </div>
+
+                  <div class="form-group">
+                    <label for="aadhar-card">Aadhar Card Number</label>
+                    {{ person.aadhar_card }}
+                  </div>
+
+               <div class="form-group">
+                    <label for="bhamashah">Bhamashah Id</label>
+                      {{ person.bhamashah }}
+                  </div>
+                  <div class="form-group">
+                    <label for="contact_number">Mobile Number</label>
+                      {{ person.contact_number }}
+                  </div>
+                  <div class="form-group">
+                    <label for="village">Village</label>
+                      {{ contact_number.village }}
+                  </div>
+ 
+                  </div>
+                  <button type="submit" class="btn btn-primary">Confirm</button>
+                </fieldset>
+              </form>
+            <div id="source-button" class="btn btn-primary btn-xs" style="display: none;">&lt; &gt;</div></div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+<br>
+{% endblock %}
