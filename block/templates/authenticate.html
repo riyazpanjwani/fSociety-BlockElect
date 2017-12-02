@@ -6,16 +6,13 @@ Verification
 
 {% block content %}
 
-<form method="POST" action="qr_code">
+<form method="POST" action="final_vote">
 
 
 <center> 
 
 {% if check %}
 {{ "Please enter otp again." }}
-{% endif %}
-{% if resent %}
-{{ "OTP has been sent" }}
 {% endif %}
 
 <br> 

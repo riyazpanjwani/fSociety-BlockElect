@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %} Login {% endblock %}
+
+
+
+{% block content %}
+<form method="POST" enctype="multipart/form-data" action="authenticate">
+<center>
+<br>
+<h1> Register your Vote </h1>
+<h2> Upload QR Code </h2> 
+    <div class="form-group">
+		<div class="form-group">
+			<br>
+      		<input type="file" class="form-control-file" id="qrcode" aria-describedby="help" name="file">
+      		<small id="help" class="form-text text-muted">Please Upload the QR Code given.</small>
+    	</div>
+    	<br>
+        <button type="submit" class="btn btn-primary"> Submit QR Code </button>
+     </div>
+</center>
+</form>
+{% endblock %}
+
