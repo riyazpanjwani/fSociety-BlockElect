@@ -2,6 +2,7 @@ from block import block
 from flask import render_template
 from flask import request
 from twilio.rest import Client
+import cv2
 import random
 
 
@@ -11,6 +12,7 @@ contact_number = None
 aadhar_card_number = None
 bhamashah = None
 otp = None
+num_faces = 0
 
 @block.route('/')
 @block.route('/index')
@@ -53,4 +55,40 @@ def qr_code_generator():
 	else:
 		check = 1
 		return render_template('verification.html',check = check)
-	
+
+def gen_frames():
+    faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+
+    video_capture_instance = cv2.VideoCapture(0)
+    global num_faces
+    while(True):
+        bool_ret, frame = video_capture_instance.read()
+
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        faces = faceCascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5,
+                minSize=(30, 30), flags=cv2.cv.CV_HAAR_SCALE_IMAGE)
+
+        for (x, y, w, h) in faces:
+            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+
+        if(len(faces) > 1):
+            num_faces = 2
+            yield(b'--frame\r\n'
+                    b'Content-Type: image/jpeg\r\n\r\n' + frame +b'\r\n')
+            break
+        else:
+            num_faces = 1
+            yield(b'--frame\r\n'
+                    b'Content-Type: image/jpeg\r\n\r\n' + frame +b'\r\n')
+    cap.release()
+    cv2.destroyAllWindows()
+
+@block.route('/video_feed')
+def video_feed():
+    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@block.route('/candidate_list')
+def candidate_list():
+    candidate_list = ['Utkarsh', 'Riyaz', 'Tushalien']
+    return render_template('voting_list.html', candidate_list=enumerate(candidate_list))

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Block Elect
+{% endblock %}
+{% block content %}
+
+<form action="display_val">
+<div class="row">
+    <div class="col-lg-5">
+        <fieldset class="form-group">
+            <legend>Candidates Participating in your area</legend>
+            {% for i, candidate_name in candidate_list %}
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" name="optionsRadios" id={{ i }} value="option"+ {{ i }} checked="" type="radio">
+                    {{ candidate_name }}
+                </label>
+            </div>
+            {% endfor %}
+        </fieldset>
+    </div>
+</div>
+<img src="{{ url_for('video_feed') }}">
+</div>
+<button type="submit" class="btn btn-primary">Submit</button>
+<br>
+
+{% endblock %}
