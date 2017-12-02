@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Verification
+{% endblock %}
+
+{% block content %}
+
+<form method="POST" action="qr_code">
+
+
+<center> 
+
+{% if check %}
+{{ "Please enter otp again." }}
+{% endif %}
+
+<br> 
+
+<h1> Please Enter OTP </h1> 
+             <div class="form-group">
+                    <input class="form-center-small" name = "otp" maxlength = "4" id="otp" placeholder="Enter OTP">
+ <!--                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+ <div class="inline">
+          <br>
+          <!-- <button type="submit" class="btn btn-primary">Resend OTP</button> -->
+          <button type="submit" class="btn btn-primary">Submit OTP</button>
+  </div>
+                </div>
+</center>
+
+</form>
+{% endblock %}
