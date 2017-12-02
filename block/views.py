@@ -1,6 +1,6 @@
 from block import block
 from flask import render_template
-from flask import request
+from flask import request, Response
 from twilio.rest import Client
 import cv2
 import random
@@ -72,15 +72,17 @@ def gen_frames():
         for (x, y, w, h) in faces:
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
+        frame = cv2.imencode('.jpg', frame)[1].tobytes()
         if(len(faces) > 1):
             num_faces = 2
-            yield(b'--frame\r\n'
-                    b'Content-Type: image/jpeg\r\n\r\n' + frame +b'\r\n')
+
+            yield(b'--frame\r\n'+
+                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
             break
         else:
             num_faces = 1
-            yield(b'--frame\r\n'
-                    b'Content-Type: image/jpeg\r\n\r\n' + frame +b'\r\n')
+            yield(b'--frame\r\n'+
+                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
     cap.release()
     cv2.destroyAllWindows()
 
