@@ -15,3 +15,12 @@
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
 }
+
+.container_cust {
+  width: 80%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+

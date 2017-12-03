@@ -1,19 +1,19 @@
 from block import block
 from flask import render_template
-from flask import request, redirect,send_file, url_for, Response
+from flask import request, redirect,send_file, url_for, Response, jsonify
 from twilio.rest import Client
 import random
 import os
-#import qrtools
-#from qrtools import QR
+import qrtools
+from qrtools import QR
 import qrcode
 from io import BytesIO
-# import cv2
+import cv2
 from mimetypes import types_map
 import json
 import urllib2
 from cryptography.fernet import Fernet
-
+import multiprocessing
 name = None
 village = None
 contact_number = None
@@ -26,6 +26,7 @@ AUTH_TOKEN = '0afddb8124ffc433382f0f7219e91335'
 UPLOAD_FOLDER = '/home/tushalien/Desktop/hack/fSociety-BlockElect/block/qrcodes'
 # UPLOAD_FOLDER = 'C:/Users/Aryan/Desktop'
 block.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+num_faces = multiprocessing.Manager().Value(int, 1)
 
 class Person:
 	global name
@@ -36,7 +37,7 @@ class Person:
 	global mid
 	global familyId
 
-	def __init__(name,village,contact_number,aadhar_card_number,bhamashah,mid,familyId):
+	def __init__(self):
 		self.name = name
 		self.village = village
 		self.contact_number = contact_number
@@ -45,6 +46,7 @@ class Person:
 		self.mid = mid
 		self.familyId = familyId
 
+person = Person()
 otp = None
 cipher_key = Fernet.generate_key()
 cipher = Fernet(cipher_key)
@@ -68,14 +70,14 @@ def profile():
 	global bhamashah
 	global mid
 	global familyId
+	global person
 
 	fid = request.form['fid']
 	tar_url = url+"/"+fid+post_url
 	data = json.load(urllib2.urlopen(tar_url))
 
 	#print data
-	
-	person = Person()
+
 
 	hof = request.form['hof']
 	mid = request.form['mid']
@@ -83,7 +85,7 @@ def profile():
 	if(hof):
 		person.name = data.get("hof_Details").get("NAME_ENG")
 		person.village = data.get("hof_Details").get("VILLAGE_NAME")
-		person.bhamashah = bhamashah
+		person.bhamashah = data.get("hof_Details").get("BHAMASHAH_ID")
 		person.contact_number = data.get("hof_Details").get("MOBILE_NO")
 		person.aadhar_card_number = data.get("hof_Details").get("AADHAR_ID")
 	else:
@@ -92,9 +94,10 @@ def profile():
 			if(member.get("M_ID") == mid):
 				person.name = data.get("NAME_ENG")
 				person.village = data.get("VILLAGE_NAME")
-				person.bhamashah = data.get("")
+				person.bhamashah = data.get("BHAMASHAH_ID")
 				person.contact_number = data.get("MOBILE_NO")
-				person.aadhar_card_number = data.get("hof_Details").get("AADHAR_ID")
+				person.aadhar_card_number = data.get("AADHAR_ID")
+	print person.name
 	return render_template('profile.html',person = person)
 
 @block.route('/verify',methods=['POST'])
@@ -105,11 +108,13 @@ def verify():
 	global aadhar_card_number
 	global bhamashah
 	global otp
-	name = request.form['name']
-	village = request.form['village']
-	contact_number = request.form['contact_number']
-	aadhar_card_number = request.form['aadhar_card']
-	bhamashah = request.form['bhamashah']
+	global person
+
+	name = person.name
+	village = person.village
+	contact_number = person.contact_number
+	aadhar_card_number = person.aadhar_card_number
+	bhamashah = person.bhamashah
 
 	
 
@@ -129,7 +134,7 @@ def qr_code_generator():
 	global otp
 	rec_otp = request.form['otp']
 	if( int(rec_otp) == otp):
-		return redirect(url_for('qr_code_print', id="blah blah"))
+		return redirect(url_for('qr_code_print', id="qr_download"))
 	else:
 		check = 1
 		return render_template('verification.html',check = check)
@@ -144,21 +149,15 @@ def qr_code_print():
 	global bhamashah
 	data =name+"&"+village+"&"+contact_number+"&"+aadhar_card_number+"&"+bhamashah
 	print data
-	qrdata = QR(data=data, pixel_size=10)
-	qrdata.encode()
-	print qrdata
-	return qrdata
-
-
-	encrypted_data = cipher.encrypt(data)
-
+	#encrypted_data = cipher.encrypt(data)
+	encrypted_data=data
 	qr = qrcode.QRCode(
     version=1,
     error_correction=qrcode.constants.ERROR_CORRECT_L,
     box_size=10,
     border=4,
 	)
-	qr.add_data(data)
+	qr.add_data(encrypted_data)
 	qr.make(fit=True)
 
 	img = qr.make_image()
@@ -188,15 +187,15 @@ def authenticate():
 	print file
 	file.save(os.path.join(block.config['UPLOAD_FOLDER'], 'tmp.png'))
 	qr = qrtools.QR()
-	print img
-	print filejpeg
+	#print img
+	#	print filejpeg
 	qr.decode(os.path.join(block.config['UPLOAD_FOLDER'], 'tmp.png'))
-	d=qrcode.Decoder()
-	if d.decode(qr):
+	#d=qrcode.Decoder()
+	#if d.decode(qr):
 	qrcode_detail = qr.data
 	print qrcode_detail
 
-	decrypted_text = cipher.decrypt(qrcode_detail)
+	#decrypted_text = cipher.decrypt(qrcode_detail)
 
 	qrcode_detail= qrcode_detail.split("&")
 	name=qrcode_detail[0]
@@ -233,13 +232,22 @@ def resend_otp():
              body="Hello "+ name + ", Your OTP for Block Elect verification is: "+ str(otp))
 	return render_template('verification.html',resent = resend)
 
+@block.route('/_getnumfaces',methods=['POST'])
+def getnumfaces():
+	global num_faces
 
+	return jsonify(num_faces.get())
+
+
+video_capture_instance = None
 def gen_frames():
     faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
     print faceCascade
+    global video_capture_instance
     video_capture_instance = cv2.VideoCapture(0)
     global num_faces
-    while(True):
+    count = 0
+    while(True and count < 100):
         bool_ret, frame = video_capture_instance.read()
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -251,24 +259,19 @@ def gen_frames():
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
         frame = cv2.imencode('.jpg', frame)[1].tobytes()
+        count += 1
         if(len(faces) > 1):
-            num_faces = 2
+            num_faces.set(2)
             print(num_faces)
             yield(b'--frame\r\n'+
                     b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-
             break
-        
-
         else:
-            num_faces = 1
+            num_faces.set(1)
             yield(b'--frame\r\n'+
                     b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-    print "DSgf"
     #return redirect(url_for('index'))
     video_capture_instance.release()
-    cv2.destroyAllWindows()
     yield ''
 
 
@@ -279,11 +282,32 @@ def video_feed():
 @block.route('/candidate_list')
 def candidate_list():
     candidate_list = ['Utkarsh', 'Riyaz', 'Tushalien']
-    return render_template('voting_list.html', candidate_list=enumerate(candidate_list))
+    return render_template('final1.html', candidate_list='Riyaz')
 
+
+@block.route('/display_val', methods=['POST', 'GET'])
+def display_val():
+	global num_faces
+	if num_faces > 1:
+		global video_capture_instance
+		video_capture_instance.release()
+		cv2.destroyAllWindows()
+		return render_template('login.html')
+	else:
+		global video_capture_instance
+		video_capture_instance.release()
+		cv2.destroyAllWindows()
+		return render_template('final.html')
 
 
 @block.route('/final_vote', methods=['POST'])
 def final_vote():
-	return render_template('final_vote.html')
+	return redirect(url_for('candidate_list'))
 
+@block.route('/final1')
+def final1():
+	return render_template('final1.html')
+
+@block.route('/final2')
+def final2():
+	return render_template('final2.html')

@@ -21,28 +21,28 @@ Block Elect
             <div class="bs-component">
               <form method="POST" action="verify">
                 <fieldset>
-                  <legend>Profile</legend>
+                  <legend>Profile </legend>
                   <div class="form-group">
-                    <label for="name">Name</label>
+                    <label for="name"><b>Name:</b> &nbsp;</label>
                     {{ person.name }}
                   </div>
 
                   <div class="form-group">
-                    <label for="aadhar-card">Aadhar Card Number</label>
-                    {{ person.aadhar_card }}
+                    <label for="aadhar-card"> <b> Aadhar Card Number: &nbsp;</b></label>
+                     {{ person.aadhar_card_number }} 
                   </div>
 
                <div class="form-group">
-                    <label for="bhamashah">Bhamashah Id</label>
+                    <label for="bhamashah"> <b> Bhamashah Id: &nbsp; </b> </label>
                       {{ person.bhamashah }}
                   </div>
                   <div class="form-group">
-                    <label for="contact_number">Mobile Number</label>
+                    <label for="contact_number"><b> Mobile Number: &nbsp; </b></label>
                       {{ person.contact_number }}
                   </div>
                   <div class="form-group">
-                    <label for="village">Village</label>
-                      {{ contact_number.village }}
+                    <label for="village"><b> Village: &nbsp; </b></label>
+                      {{ person.village }}
                   </div>
  
                   </div>

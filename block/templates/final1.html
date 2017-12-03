@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Block Elect</title>
+<!--   <link href='static/css.css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link href='static/bootstrap.min.css' rel='stylesheet' type='text/css'> -->
+     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+         <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./static/css/bootstrap.css" media="screen">
+    <link rel="stylesheet" href="./static/css/custom.css" media="screen">
+</head>
+
+<body style="" class="">
+             <div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary" style="">
+      <div class="container">
+        <a href="https://bootswatch.com/" class="navbar-brand">Block Elect</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" style="">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav">
+
+          </ul>
+
+
+        </div>
+      </div>
+    </div>
+
+
+
+<body class="container">
+
+        <a href="https://bootswatch.com/" class="navbar-brand">Block Elect</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" style="">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav">
+
+          </ul>
+
+                 </div>
+      </div>
+    </div>
+<!--   <h1>Block Elect</h1> -->
+<br> <br> <br> <br>
+  <div class="table-responsive" style="margin-left: 20% ; margin-right: 20%" ><div style="float-left: 80px">
+<img width="200px" src="{{ url_for('video_feed') }}">
+</div>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Candidate</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Anuj</td>
+        </tr>
+        <tr>
+          <td>Dinesh</td>
+        </tr>
+        <tr>
+          <td>Dushyant</td>
+        </tr>
+      </tbody>
+    </table>
+  Enter candidate name
+  <br>
+  <input type="text" id="candidate" />
+  <a href="#" onclick="voteForCandidate()" class="btn btn-primary" id="voterButton">Vote</a>
+  <br>
+  <br>
+  Enter voter name
+  <br>
+  <input type="text" id="voter" />
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  </div>
+</body>
+
+<script src="./static/web3.js"></script>
+<script src="./static/jquery-3.1.1.slim.min.js"></script>
+<script type="text/javascript">
+
+            $.ajax(
+            {
+              type : 'POST',
+              url : "/_getnumfaces",
+              dataType:'json',
+              //data    : JSON.stringify( { "message" : "didyoureceive?" } ),
+              success : function(data)
+              {
+                if (data !=null)
+                {
+                  messageServer=data;
+                  //$('#UID_afficheTest').val(messageServer);
+                  document.getElementById('voterButton').disabled = true;
+                  alert(messageServer + "Someone is watching you !!");
+                  timeOutId = setTimeout(ajaxFn, 1000);
+                }
+              }/*success : function() {}*/
+
+            });/*$.ajax*/
+
+
+</script>
+<script src="./static/index.js"></script>
+    <script src="./static/js/jquery.min.js"></script>
+    <script src="./static/js/bootstrap.min.js"></script>
+
+
+</html>

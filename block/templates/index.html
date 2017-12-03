@@ -7,19 +7,23 @@
 <form method="POST" action="profile">
 
 
-<center> 
 
 <br> 
 
 <h1> Registration </h1> 
-             <div class="form-group">
+             <div class="form-group" style="display:inline">
              <label> Enter Family Id Number </label>
-                    <input class="form-center-small" name = "fid" maxlength = "7" id="fid" placeholder="Enter Family id Number">
+                    <input class="form-center-small" name = "fid" maxlength = "7" id="fid" placeholder="Enter Family id Number"></div>
  <!--                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
-
+ <br>
+ <div class="form-group">
+<input type="checkbox" name="hof" id="pChk"> <label> &nbsp;Head of the Family</label>
+</div>
+                <div id= "div">
                 <label> Enter M Id  </label>
-                    <input class="form-center-small" name = "mid" maxlength = "7" id="mid" placeholder="Enter M id Number">
-            <br>
+                    <input class="form-center-small" id="mid" name = "mid" maxlength = "7" id="mid" placeholder="Enter M id Number">
+        
+            </div><br>
           <!-- <button type="submit" class="btn btn-primary">Resend OTP</button> -->
 <!--                     <div class="form-group">
                     <label for="hof">Head of Family</label>
@@ -29,10 +33,20 @@
                       </div>
           </div> -->
  
-<button type="submit" class="btn btn-primary">Submit OTP</button>
+<button type="submit" class="btn btn-primary">Submit</button>
 
-</center>
 
 </form>
+    <script src="../static/js/jquery.min.js"></script>
+
+<script type="text/javascript">
+  $('#pChk').click(function() {
+    if( $(this).is(':checked')) {
+        $("#div").hide();
+    } else {
+        $("#div").show();
+    }
+}); 
+</script>
 {% endblock %}
 
